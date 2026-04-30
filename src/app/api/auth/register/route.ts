@@ -20,9 +20,9 @@ export async function POST(request: Request) {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const userRole = role === 'complainant' ? 'citizen' : role || 'citizen';
+    const userRole = role || 'complainant';
 
-    await User.create({
+    const user = await User.create({
       email,
       passwordHash,
       role: userRole,

@@ -25,15 +25,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    const role = user.role === 'complainant' ? 'citizen' : user.role;
-
     const token = jwt.sign(
-      { userId: user._id, role, email: user.email },
+      { userId: user._id, role: user.role, email: user.email },
       JWT_SECRET,
       { expiresIn: '1d' }
     );
 
-    const response = NextResponse.json({ success: true, role });
+    const response = NextResponse.json({ success: true, role: user.role });
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     // 2. Call Gemini for AI Processing (Transcription, PII Scrubbing, Summarization)
     let aiResult;
     if (process.env.GEMINI_API_KEY) {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const prompt = `
         You are a grievance processing AI. Listen to the audio. 
         The user has categorized this issue as "${category}".
@@ -100,18 +100,16 @@ export async function POST(request: Request) {
       };
     }
 
-    // 3. Connect to Database & Generate PIN & Case Number
+    // 3. Connect to Database & Generate PIN
     await dbConnect();
     const pin = Math.floor(1000 + Math.random() * 9000).toString();
-    const caseNumber = 'CAS-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + crypto.randomBytes(2).toString('hex').toUpperCase();
 
     // 4. Create Blockchain-lite Hash (Tamper-proof log)
-    const dataToHash = `${caseNumber}-${pin}-${aiResult.summary}-${aiResult.category}-${Date.now()}`;
+    const dataToHash = `${pin}-${aiResult.summary}-${aiResult.category}-${Date.now()}`;
     const hash = crypto.createHash('sha256').update(dataToHash).digest('hex');
 
     // 5. Save to MongoDB
     const complaintData: any = {
-      caseNumber,
       pin,
       transcript: aiResult.transcript,
       summary: aiResult.summary,
@@ -127,7 +125,7 @@ export async function POST(request: Request) {
 
     const complaint = await Complaint.create(complaintData);
 
-    return NextResponse.json({ success: true, caseNumber, pin, complaintId: complaint._id });
+    return NextResponse.json({ success: true, pin, complaintId: complaint._id });
 
   } catch (error: any) {
     console.error("API Error:", error);

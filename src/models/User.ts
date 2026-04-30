@@ -3,7 +3,9 @@ import mongoose from 'mongoose';
 export interface IUser extends mongoose.Document {
   email: string;
   passwordHash: string;
-  role: 'citizen' | 'complainant' | 'official';
+  role: 'complainant' | 'validator' | 'official';
+  otp?: string;
+  otpExpiry?: Date;
   createdAt: Date;
 }
 
@@ -12,9 +14,11 @@ const UserSchema = new mongoose.Schema<IUser>({
   passwordHash: { type: String, required: true },
   role: { 
     type: String, 
-    enum: ['citizen', 'complainant', 'official'], 
-    default: 'citizen' 
+    enum: ['complainant', 'validator', 'official'], 
+    default: 'complainant' 
   },
+  otp: { type: String, required: false },
+  otpExpiry: { type: Date, required: false },
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

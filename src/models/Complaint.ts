@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 export interface IComplaint extends mongoose.Document {
   userId?: mongoose.Types.ObjectId;
-  caseNumber: string;
   pin: string;
   originalAudioUrl?: string;
   photoUrl?: string;
@@ -18,7 +17,6 @@ export interface IComplaint extends mongoose.Document {
 
 const ComplaintSchema = new mongoose.Schema<IComplaint>({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  caseNumber: { type: String, required: true, unique: true },
   pin: { type: String, required: true, unique: true },
   originalAudioUrl: { type: String }, // Optional for MVP, since we might just process memory buffers
   photoUrl: { type: String },

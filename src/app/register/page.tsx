@@ -9,7 +9,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("citizen");
+  const [role, setRole] = useState("complainant");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -40,7 +40,7 @@ export default function RegisterPage() {
       
       if (loginRes.ok) {
         if (loginData.role === "official") router.push("/official");
-
+        else if (loginData.role === "validator") router.push("/validator");
         else router.push("/citizen");
       } else {
         router.push("/login");
@@ -78,7 +78,7 @@ export default function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
                 placeholder="you@example.com"
               />
             </div>
@@ -89,7 +89,7 @@ export default function RegisterPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -98,9 +98,10 @@ export default function RegisterPage() {
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all bg-white"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-900 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
               >
-                <option value="citizen">Citizen</option>
+                <option value="complainant">Citizen (Complainant)</option>
+                <option value="validator">Community Validator</option>
                 <option value="official">Government Official</option>
               </select>
             </div>

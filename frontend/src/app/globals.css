@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-display: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: var(--font-inter), 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --background: #050510;
+  --foreground: #ffffff;
+  --primary: #818cf8;
+  --accent: #f472b6;
+  --success: #34d399;
+  --warning: #fbbf24;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+  font-family: var(--font-body);
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Mesh Background - Brighter */
+.mesh-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(circle at 10% 10%, #1e1b4b 0%, #050510 100%);
+  overflow: hidden;
+}
+
+.mesh-bg::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 20%, rgba(129, 140, 248, 0.25) 0%, transparent 40%),
+              radial-gradient(circle at 80% 80%, rgba(244, 114, 182, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.1) 0%, transparent 40%);
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Glassmorphism - Brighter Borders */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+.glass-hover:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 30px rgba(129, 140, 248, 0.2);
+  transform: translateY(-8px) scale(1.02);
+}

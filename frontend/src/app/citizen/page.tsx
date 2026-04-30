@@ -708,20 +708,36 @@ export default function CitizenDashboard() {
 
     setLocationStatus("locating");
     
-    const options = { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 };
+    // Most accurate options possible
+    const options = { 
+      enableHighAccuracy: true, 
+      timeout: 10000, 
+      maximumAge: 0 
+    };
 
     watchIdRef.current = navigator.geolocation.watchPosition(
       (position: GeolocationPosition) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, accuracy } = position.coords;
+        console.log(`GPS Update: Lat ${latitude}, Lng ${longitude}, Accuracy: ${accuracy}m`);
+        
         setLocation({ lat: latitude, lng: longitude });
-        setLocationStatus("locked");
+        
+        // Only lock if accuracy is better than 20 meters, or if we already have a decent lock
+        if (accuracy <= 20) {
+          setLocationStatus("locked");
+        } else if (locationStatus !== "locked") {
+          // If accuracy is poor, we are still "locating" but have a fallback location
+          setLocationStatus("locating");
+        }
+        
         reverseGeocode(latitude, longitude);
       },
       (err: GeolocationPositionError) => {
-        console.warn(`Location error (${err.code}): ${err.message}. Retrying...`);
-        if (err.code === err.TIMEOUT) {
+        console.warn(`Location error (${err.code}): ${err.message}`);
+        // Only retry on timeout
+        if (err.code === err.TIMEOUT && locationStatus !== "locked") {
           requestLocation();
-        } else {
+        } else if (err.code === err.PERMISSION_DENIED) {
           setLocationStatus("error");
         }
       },
@@ -732,14 +748,8 @@ export default function CitizenDashboard() {
   const selectCategory = (categoryId: string) => {
     setSelectedCategory(categoryId);
     requestLocation();
-    
-    const photoCategories = ["Water & Sanitation", "Electricity", "Roads & Infrastructure", "Waste Management"];
-    if (photoCategories.includes(categoryId)) {
-      setStep("photo");
-      startCamera();
-    } else {
-      setStep("input-type");
-    }
+    setStep("photo");
+    startCamera();
   };
 
   const startCamera = async () => {
@@ -1094,16 +1104,20 @@ export default function CitizenDashboard() {
                   <div className="space-y-4">
                     <div className="relative bg-slate-900 rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl border border-slate-800">
                       <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                      <div className="absolute top-4 left-4 bg-indigo-600/20 backdrop-blur-md border border-indigo-500/30 text-indigo-400 text-[10px] font-black px-3 py-1.5 rounded-full flex items-center shadow-lg">
+                        <Sparkles className="w-3 h-3 mr-1.5" />
+                        AI GEO-TAGGING ACTIVE
+                      </div>
                       <div className="absolute top-4 right-4 flex flex-col items-end space-y-2">
                         {locationStatus === "locked" ? (
                           <div className="bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center shadow-lg">
                             <MapPin className="w-3 h-3 mr-1.5" />
-                            {locationName || "Location Captured"}
+                            HIGH PRECISION LOCK
                           </div>
                         ) : (
                           <div className="bg-slate-900/80 backdrop-blur-md text-slate-400 text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center border border-slate-800">
                             <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />
-                            Locating...
+                            OPTIMIZING GPS...
                           </div>
                         )}
                       </div>
@@ -1145,10 +1159,9 @@ export default function CitizenDashboard() {
                     </div>
                   </div>
                   <div className="flex space-x-3">
-                    <button onClick={skipPhoto} className="flex-1 py-4 bg-transparent border border-slate-800 text-slate-400 text-sm font-bold rounded-xl hover:bg-slate-800 transition-colors">{t('skip')}</button>
-                    <button onClick={capturePhoto} className="flex-[2] flex items-center justify-center bg-indigo-600 text-white text-sm font-bold py-4 rounded-xl hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20">
+                    <button onClick={capturePhoto} disabled={locationStatus !== "locked"} className="flex-1 flex items-center justify-center bg-indigo-600 disabled:bg-slate-800 disabled:text-slate-600 text-white text-sm font-bold py-4 rounded-xl hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20">
                       <Camera className="w-4 h-4 mr-2" />
-                      {t('take_photo')}
+                      {locationStatus === "locked" ? t('take_photo') : "Waiting for GPS..."}
                     </button>
                   </div>
                 </div>

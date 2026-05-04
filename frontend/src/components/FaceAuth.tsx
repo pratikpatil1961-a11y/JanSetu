@@ -6,7 +6,7 @@ import { Camera, Loader2, CheckCircle2, AlertCircle, ShieldCheck, UserCheck, X }
 
 interface FaceAuthProps {
   mode: 'enroll' | 'verify';
-  onSuccess: (embedding?: number[]) => void;
+  onSuccess: (embedding: number[]) => void | Promise<void>;
   onCancel: () => void;
 }
 

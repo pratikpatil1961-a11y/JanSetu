@@ -4,8 +4,26 @@ export interface IUser extends mongoose.Document {
   anonymousId?: string;
   email?: string;
   passwordHash: string; // Stores the hashed secret key or password
-  role: 'citizen' | 'official' | 'admin' | 'anganwadi';
+  role: 'citizen' | 'official' | 'admin' | 'anganwadi' | 'ngo';
   department?: string; // For officials/anganwadi
+  ngoName?: string;
+  ngoType?: string;
+  registrationId?: string;
+  operationalArea?: {
+    city: string;
+    state: string;
+  };
+  phone?: string;
+  representative?: {
+    name: string;
+    role: string;
+  };
+  description?: string;
+  website?: string;
+  ngoStatus?: string;
+  credibilityScore?: number;
+  facialEmbedding?: number[];
+  isFaceRegistered?: boolean;
   createdAt: Date;
 }
 

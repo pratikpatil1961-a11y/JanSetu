@@ -26,3 +26,4 @@ backend/local-db/
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+*.zip

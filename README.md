@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Project Structure
@@ -44,3 +45,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 =======
 # team-62
 >>>>>>> d68d679e3f2adaaa99aba1d37aa43693c20fbc94
+=======
+# JanSetu
+>>>>>>> 7fb8708d6225d11397d5058bb54ed863bcf78318
